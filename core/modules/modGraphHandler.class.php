@@ -83,7 +83,7 @@ class modGraphHandler extends DolibarrModules
 		// If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
 		// To use a supported fa-xxx css style of font awesome, use this->picto='xxx'
-		$this->picto = 'fa-file-o';
+		$this->picto = 'graphhandler@graphHandler';
 
 		// Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
@@ -111,7 +111,7 @@ class modGraphHandler extends DolibarrModules
 			),
 			// Set this to relative path of js file if module must load a js on all pages
 			'js' => array(
-				//   '/graphhandler/js/graphhandler.js.php',
+				'/graphhandler/js/graphhandler.js',
 			),
 			// Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context to 'all'
 			'hooks' => array(
@@ -295,8 +295,8 @@ class modGraphHandler extends DolibarrModules
 		$this->menu[$r++] = array(
 			'fk_menu'=>'', // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'top', // This is a Top menu entry
-			'titre'=>'ModuleGraphHandlerName',
-			'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
+			'titre'=>'Test Graph',
+			'prefix' => img_picto('', 'graphhandler@graphHandler', 'class="paddingright pictofixedwidth valignmiddle"',true),
 			'mainmenu'=>'graphhandler',
 			'leftmenu'=>'',
 			'url'=>'/graphhandler/graphhandlerindex.php',
@@ -307,13 +307,14 @@ class modGraphHandler extends DolibarrModules
 			'target'=>'',
 			'user'=>2, // 0=Menu for internal users, 1=external users, 2=both
 		);
+
 		/* END MODULEBUILDER TOPMENU */
 		/* BEGIN MODULEBUILDER LEFTMENU MYOBJECT */
-		/*$this->menu[$r++]=array(
+		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=graphhandler',      // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',                          // This is a Left menu entry
-			'titre'=>'GraphHandler',
-			'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
+			'titre'=>'Accueil',
+			//'prefix' => img_picto('', 'test@graphHandler', 'class="paddingright pictofixedwidth valignmiddle"'),
 			'mainmenu'=>'graphhandler',
 			'leftmenu'=>'graphhandler',
 			'url'=>'/graphhandler/graphhandlerindex.php',
@@ -327,40 +328,86 @@ class modGraphHandler extends DolibarrModules
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>'List_GraphHandler',
+			'titre'=>'La liste',
 			'mainmenu'=>'graphhandler',
 			'leftmenu'=>'graphhandler_graphhandler_list',
 			'url'=>'/graphhandler/graphhandler_list.php',
 			'langs'=>'graphhandler@graphhandler',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position'=>1000+$r,
 			'enabled'=>'isModEnabled("graphhandler")', // Define condition to show or hide menu entry. Use 'isModEnabled("graphhandler")' if entry must be visible if module is enabled.
-			'perms'=>'$user->hasRight("graphhandler", "graphhandler", "read")'
+			'perms'=>'$user->hasRight("graphhandler", "graphhandler", "read")',
 			'target'=>'',
 			'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
 		);
-		$this->menu[$r++]=array(
-			'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>'New_GraphHandler',
-			'mainmenu'=>'graphhandler',
-			'leftmenu'=>'graphhandler_graphhandler_new',
-			'url'=>'/graphhandler/graphhandler_card.php?action=create',
-			'langs'=>'graphhandler@graphhandler',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>1000+$r,
-			'enabled'=>'isModEnabled("graphhandler")', // Define condition to show or hide menu entry. Use 'isModEnabled("graphhandler")' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=>'$user->hasRight("graphhandler", "graphhandler", "write")'
-			'target'=>'',
-			'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
-		);*/
-		/*LEFTMENU GRAPHHANDLER*/
+		// $this->menu[$r++]=array(
+		// 	'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+		// 	'type'=>'left',			                // This is a Left menu entry
+		// 	'titre'=>'New_GraphHandler',
+		// 	'mainmenu'=>'graphhandler',
+		// 	'leftmenu'=>'graphhandler_graphhandler_new',
+		// 	'url'=>'/graphhandler/graphhandler_card.php?action=create',
+		// 	'langs'=>'graphhandler@graphhandler',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		// 	'position'=>1000+$r,
+		// 	'enabled'=>'isModEnabled("graphhandler")', // Define condition to show or hide menu entry. Use 'isModEnabled("graphhandler")' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+		// 	'perms'=>'$user->hasRight("graphhandler", "graphhandler", "write")'
+		// 	'target'=>'',
+		// 	'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
+		// );*/
+		// /*LEFTMENU GRAPHHANDLER*/
+		// $this->menu[$r++]=array(
+		// 	'fk_menu'=>'fk_mainmenu=graphhandler',
+		// 	'type'=>'left',
+		// 	'titre'=>'GraphHandler',
+		// 	'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
+		// 	'mainmenu'=>'graphhandler',
+		// 	'leftmenu'=>'graphhandler',
+		// 	'url'=>'/graphhandler/graphhandler_list.php',
+		// 	'langs'=>'graphhandler@graphhandler',
+		// 	'position'=>1000+$r,
+		// 	'enabled'=>'$conf->testmodule->enabled',
+		// 	'perms'=>'1',
+		// 	'target'=>'',
+		// 	'user'=>2,
+		// );
+        // $this->menu[$r++]=array(
+        //     'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',
+        //     'type'=>'left',
+        //     'titre'=>'List GraphHandler',
+        //     'mainmenu'=>'graphhandler',
+        //     'leftmenu'=>'graphhandler_graphhandler_list',
+        //     'url'=>'/graphhandler/graphhandler_list.php',
+        //     'langs'=>'graphhandler@graphhandler',
+        //     'position'=>1000+$r,
+        //     'enabled'=>'$conf->graphhandler->enabled',
+        //     'perms'=>'1',
+        //     'target'=>'',
+        //     'user'=>2,
+        // );
+        // $this->menu[$r++]=array(
+        //     'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',
+        //     'type'=>'left',
+        //     'titre'=>'New GraphHandler',
+        //     'mainmenu'=>'graphhandler',
+        //     'leftmenu'=>'graphhandler_graphhandler_new',
+        //     'url'=>'/graphhandler/graphhandler_card.php?action=create',
+        //     'langs'=>'graphhandler@graphhandler',
+        //     'position'=>1000+$r,
+        //     'enabled'=>'$conf->graphhandler->enabled',
+        //     'perms'=>'1',
+        //     'target'=>'',
+        //     'user'=>2
+        // );
+
+		/*END LEFTMENU GRAPHHANDLER*/
+		/*LEFTMENU TEST*/
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=graphhandler',
 			'type'=>'left',
-			'titre'=>'GraphHandler',
+			'titre'=>'Test',
 			'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
 			'mainmenu'=>'graphhandler',
-			'leftmenu'=>'graphhandler',
-			'url'=>'/graphhandler/graphhandler_list.php',
+			'leftmenu'=>'test',
+			'url'=>'/graphhandler/test_list.php',
 			'langs'=>'graphhandler@graphhandler',
 			'position'=>1000+$r,
 			'enabled'=>'$conf->testmodule->enabled',
@@ -369,12 +416,12 @@ class modGraphHandler extends DolibarrModules
 			'user'=>2,
 		);
         $this->menu[$r++]=array(
-            'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',
+            'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=test',
             'type'=>'left',
-            'titre'=>'List GraphHandler',
+            'titre'=>'List Test',
             'mainmenu'=>'graphhandler',
-            'leftmenu'=>'graphhandler_graphhandler_list',
-            'url'=>'/graphhandler/graphhandler_list.php',
+            'leftmenu'=>'graphhandler_test_list',
+            'url'=>'/graphhandler/test_list.php',
             'langs'=>'graphhandler@graphhandler',
             'position'=>1000+$r,
             'enabled'=>'$conf->graphhandler->enabled',
@@ -383,12 +430,12 @@ class modGraphHandler extends DolibarrModules
             'user'=>2,
         );
         $this->menu[$r++]=array(
-            'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=graphhandler',
+            'fk_menu'=>'fk_mainmenu=graphhandler,fk_leftmenu=test',
             'type'=>'left',
-            'titre'=>'New GraphHandler',
+            'titre'=>'New Test',
             'mainmenu'=>'graphhandler',
-            'leftmenu'=>'graphhandler_graphhandler_new',
-            'url'=>'/graphhandler/graphhandler_card.php?action=create',
+            'leftmenu'=>'graphhandler_test_new',
+            'url'=>'/graphhandler/test_card.php?action=create',
             'langs'=>'graphhandler@graphhandler',
             'position'=>1000+$r,
             'enabled'=>'$conf->graphhandler->enabled',
@@ -397,7 +444,7 @@ class modGraphHandler extends DolibarrModules
             'user'=>2
         );
 
-		/*END LEFTMENU GRAPHHANDLER*/
+		/*END LEFTMENU TEST*/
 		/* END MODULEBUILDER LEFTMENU MYOBJECT */
 		// Exports profiles provided by this module
 		$r = 1;

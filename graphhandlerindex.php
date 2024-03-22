@@ -24,6 +24,8 @@
  *	\brief      Home page of graphhandler top menu
  */
 
+use Illuminate\Support\Facades\URL;
+
 // Load Dolibarr environment
 $res = 0;
 // Try main.inc.php into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
@@ -72,179 +74,75 @@ if (isset($user->socid) && $user->socid > 0) {
 	$socid = $user->socid;
 }
 
-// Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
-//if ($user->socid > 0) $socid = $user->socid;
-//if (!isModEnabled('graphhandler')) {
-//	accessforbidden('Module not enabled');
-//}
-//if (! $user->hasRight('graphhandler', 'myobject', 'read')) {
-//	accessforbidden();
-//}
-//restrictedArea($user, 'graphhandler', 0, 'graphhandler_myobject', 'myobject', '', 'rowid');
-//if (empty($user->admin)) {
-//	accessforbidden('Must be admin');
-//}
-
 
 /*
- * Actions
- */
+* Actions
+*/
 
 // None
 
 
 /*
- * View
- */
-
-$form = new Form($db);
-$formfile = new FormFile($db);
-
-llxHeader("", $langs->trans("GraphHandlerArea"));
-
-print load_fiche_titre($langs->trans("GraphHandlerArea"), '', 'graphhandler.png@graphhandler');
-
-print '<div class="fichecenter"><div class="fichethirdleft">';
-
-
-/* BEGIN MODULEBUILDER DRAFT MYOBJECT
-// Draft MyObject
-if (isModEnabled('graphhandler') && $user->rights->graphhandler->read)
-{
-	$langs->load("orders");
-
-	$sql = "SELECT c.rowid, c.ref, c.ref_client, c.total_ht, c.tva as total_tva, c.total_ttc, s.rowid as socid, s.nom as name, s.client, s.canvas";
-	$sql.= ", s.code_client";
-	$sql.= " FROM ".MAIN_DB_PREFIX."commande as c";
-	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
-	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-	$sql.= " WHERE c.fk_soc = s.rowid";
-	$sql.= " AND c.fk_statut = 0";
-	$sql.= " AND c.entity IN (".getEntity('commande').")";
-	if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = ".((int) $user->id);
-	if ($socid)	$sql.= " AND c.fk_soc = ".((int) $socid);
-
-	$resql = $db->query($sql);
-	if ($resql)
-	{
-		$total = 0;
-		$num = $db->num_rows($resql);
-
-		print '<table class="noborder centpercent">';
-		print '<tr class="liste_titre">';
-		print '<th colspan="3">'.$langs->trans("DraftMyObjects").($num?'<span class="badge marginleftonlyshort">'.$num.'</span>':'').'</th></tr>';
-
-		$var = true;
-		if ($num > 0)
-		{
-			$i = 0;
-			while ($i < $num)
-			{
-
-				$obj = $db->fetch_object($resql);
-				print '<tr class="oddeven"><td class="nowrap">';
-
-				$myobjectstatic->id=$obj->rowid;
-				$myobjectstatic->ref=$obj->ref;
-				$myobjectstatic->ref_client=$obj->ref_client;
-				$myobjectstatic->total_ht = $obj->total_ht;
-				$myobjectstatic->total_tva = $obj->total_tva;
-				$myobjectstatic->total_ttc = $obj->total_ttc;
-
-				print $myobjectstatic->getNomUrl(1);
-				print '</td>';
-				print '<td class="nowrap">';
-				print '</td>';
-				print '<td class="right" class="nowrap">'.price($obj->total_ttc).'</td></tr>';
-				$i++;
-				$total += $obj->total_ttc;
-			}
-			if ($total>0)
-			{
-
-				print '<tr class="liste_total"><td>'.$langs->trans("Total").'</td><td colspan="2" class="right">'.price($total)."</td></tr>";
-			}
-		}
-		else
-		{
-
-			print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("NoOrder").'</td></tr>';
-		}
-		print "</table><br>";
-
-		$db->free($resql);
-	}
-	else
-	{
-		dol_print_error($db);
-	}
-}
-END MODULEBUILDER DRAFT MYOBJECT */
-
-
-print '</div><div class="fichetwothirdright">';
-
-
-$NBMAX = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT');
-$max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT');
-
-/* BEGIN MODULEBUILDER LASTMODIFIED MYOBJECT
-// Last modified myobject
-if (isModEnabled('graphhandler') && $user->rights->graphhandler->read)
-{
-	$sql = "SELECT s.rowid, s.ref, s.label, s.date_creation, s.tms";
-	$sql.= " FROM ".MAIN_DB_PREFIX."graphhandler_myobject as s";
-	//if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-	$sql.= " WHERE s.entity IN (".getEntity($myobjectstatic->element).")";
-	//if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = ".((int) $user->id);
-	//if ($socid)	$sql.= " AND s.rowid = $socid";
-	$sql .= " ORDER BY s.tms DESC";
-	$sql .= $db->plimit($max, 0);
-
-	$resql = $db->query($sql);
-	if ($resql)
-	{
-		$num = $db->num_rows($resql);
-		$i = 0;
-
-		print '<table class="noborder centpercent">';
-		print '<tr class="liste_titre">';
-		print '<th colspan="2">';
-		print $langs->trans("BoxTitleLatestModifiedMyObjects", $max);
-		print '</th>';
-		print '<th class="right">'.$langs->trans("DateModificationShort").'</th>';
-		print '</tr>';
-		if ($num)
-		{
-			while ($i < $num)
-			{
-				$objp = $db->fetch_object($resql);
-
-				$myobjectstatic->id=$objp->rowid;
-				$myobjectstatic->ref=$objp->ref;
-				$myobjectstatic->label=$objp->label;
-				$myobjectstatic->status = $objp->status;
-
-				print '<tr class="oddeven">';
-				print '<td class="nowrap">'.$myobjectstatic->getNomUrl(1).'</td>';
-				print '<td class="right nowrap">';
-				print "</td>";
-				print '<td class="right nowrap">'.dol_print_date($db->jdate($objp->tms), 'day')."</td>";
-				print '</tr>';
-				$i++;
-			}
-
-			$db->free($resql);
-		} else {
-			print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("None").'</td></tr>';
-		}
-		print "</table><br>";
-	}
-}
+* View
 */
 
-print '</div></div>';
+
+llxHeader("", $langs->trans("Test des Graphiques"));
+
+// print load_fiche_titre($langs->trans("Test des Graphiques"), '', 'french.png@graphhandler');
+
+
+// Exemple pour un graph baton de 2 colonnes
+require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+$px = new DolGraph();
+
+$data = [
+	[
+		1,   // Valeur en abscisse (x)
+		500, // Valeur en ordonnée (y) colonne 1
+		500  // Valeur en ordonnée (y) colonne 2
+	],
+	[
+		2,    // Valeur en abscisse (x) suivante
+		1000, // Valeur en ordonnée suivante (y) colonne 1
+		5000, // Valeur en ordonnée suivante (y) colonne 2
+	],
+	[
+		3,    // Valeur en abscisse (x) suivante
+		1500, // Valeur en ordonnée suivante (y) colonne 1
+		500, // Valeur en ordonnée suivante (y) colonne 2
+	]
+];
+
+// tableau contenant des tableaux rbg de couleur
+$px->datacolor = array(
+	[40, 111, 172], /*Couleur colonne 1*/
+	[255,160,122]  /*Couleur colonne 2*/
+); 
+
+$px->SetTitle('titre du graphique');
+$px->SetData($data); // tableau contenant des tableaux qui ont en index 1 la valeur x, puis les valeur y des différentes colonnes
+$px->SetLegend(['Legende pour colonne 1','Legende pour colonne 2']); // tableau de string des différentes légendes
+// type can be: 'pie', 'piesemicircle', 'polar', 'lines', 'linesnopoint', 'bars', 'horizontalbars'...
+$px->SetType(array('bars'));// type de graphique
+$px->setHeight('240'); // Hauteur de l'image du graphique
+$px->SetWidth('400'); // Largeur de l'image du graphique
+
+// Générere un image qui correspond au paramettres donnés
+// ( l'image est détruite apres affichage ? je ne l'ai pas trouvé )
+$graphDraw = $px->draw(
+	'test', // nom de l'image du graphique
+	DOL_DOCUMENT_ROOT.'/custom/graphhandler/img/' // Repertoire de sauvegarde de l'img
+);
+
+
+// Attribu " l'image " a une variable
+$graphique = $px->show($graphDraw);
+
+// Affiche l'image dans le corps de la page
+echo '<div id="doligraph">',$graphique,'</div>';
+
+echo '<hr>';
 
 // End of page
 llxFooter();
